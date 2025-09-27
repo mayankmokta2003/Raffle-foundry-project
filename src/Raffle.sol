@@ -61,6 +61,7 @@ contract Raffle is VRFConsumerBaseV2Plus {
     /* Events */
     event RaffleEntered(address indexed player);
     event WinnerPicked(address indexed winner);
+    event RequestedRaffleWinner(uint256 indexed requestId);
 
     constructor(
         uint256 enteranceFee,
@@ -141,6 +142,8 @@ contract Raffle is VRFConsumerBaseV2Plus {
         });
 
         uint256 requestId = s_vrfCoordinator.requestRandomWords(request);
+        emit RequestedRaffleWinner(requestId);
+
     }
 
     function fulfillRandomWords(uint256 requestId, uint256[] calldata randomWords) internal virtual override {
@@ -164,5 +167,19 @@ contract Raffle is VRFConsumerBaseV2Plus {
      */
     function getEnteranceFee() external view returns (uint256) {
         return i_enteranceFee;
+    }
+
+    function getRaffleState() external view returns (RaffleState) {
+        return s_raffleState;
+    }
+
+    function getPlayer(uint256 index) external view returns (address) {
+        return s_players[index];
+    }
+    function getLastTimestamp() external view returns (uint256){
+        return s_lastTimeStamp;
+    }
+    function getRecentWinner() external view returns (address){
+        return s_recentWinner;
     }
 }
